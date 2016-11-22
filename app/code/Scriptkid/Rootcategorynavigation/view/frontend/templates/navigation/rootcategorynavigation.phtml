@@ -1,0 +1,46 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * Category left navigation
+ *
+ * @var $block \Magento\Catalog\Block\Navigation
+ */
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$_currentCategory = $objectManager->get('Magento\Framework\Registry')->registry('current_category');
+?>
+<?php if (!$block->getCategory()) {
+    return;
+} ?>
+<?php $_categories = $block->getCurrentChildCategories(); ?>
+
+<?php $_count = is_array($_categories) ? count($_categories) : $_categories->count(); ?>
+<?php if ($_count): ?>
+    <div class="side-navigation hidden-sm hidden-xs">
+      <h2><?php /* @escapeNotVerified */ echo $_currentCategory->getName(); ?></h2>
+      <ul class="nav">
+        <?php foreach ($_categories as $_category): ?>
+          <?php if ($_category->getIsActive()): ?>
+            <li>
+              <a href="<?php /* @escapeNotVerified */ echo $block->getCategoryUrl($_category) ?>"<?php if ($block->isCategoryActive($_category)): ?> class="current"<?php endif; ?>><?php echo $block->escapeHtml($_category->getName()) ?></a>
+              <?php if($_category->getChildrenCategories()->count() > 0): ?>
+                <span class="side-navigation-switch"></span>
+                <ul class="nav side-navigation-level2">
+                  <?php foreach($_category->getChildrenCategories() as $_category): ?>
+                    <li>
+                      <a href="<?php /* @escapeNotVerified */ echo $block->getCategoryUrl($_category) ?>"<?php if ($block->isCategoryActive($_category)): ?> class="current"<?php endif; ?>><?php echo $block->escapeHtml($_category->getName()) ?></a>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              <?php endif; ?>
+            </li>
+          <?php endif; ?>
+        <?php endforeach ?>
+      </ul>
+    </div>
+<?php endif; ?>
